@@ -11,7 +11,7 @@
 -- there is no multiple records with the same requester_id and accepter_id value.
 
 
--- leetcode solution (WRONG)
+-- leetcode solution (WRONG!)
 SELECT t.id, COUNT(t.id) AS num FROM
   ( SELECT requester_id AS id FROM request_accepted
     UNION ALL
@@ -22,12 +22,14 @@ ORDER BY num DESC LIMIT 1
 -- The answer is double counting if I have person 1 sending request to person 2,
 -- and person 2 sending request to person 1.
 
--- solution
+
+-- Solution
 SELECT t.id1 AS id, COUNT(t.id2) AS num
 FROM
   ( SELECT requester_id AS id1, accepter_id AS id2 FROM request_accepted
     UNION
-    SELECT accepter_id AS id1, requester_id AS id2 FROM request_accepted ) t
+    SELECT accepter_id AS id1, requester_id AS id2 FROM request_accepted
+  ) t
 GROUP BY t.id1
 ORDER BY num DESC
 LIMIT 1
