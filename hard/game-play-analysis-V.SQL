@@ -2,6 +2,8 @@
 -- Write an SQL query that reports for each install date,
 -- the number of players that installed the game on that day and the day 1 retention.
 
+-- Construct the temp table first, then use LEFT JOIN and SUM(CASE WHEN...) to count non-null values.
+
 
 SELECT t1.install_dt, COUNT(DISTINCT t1.player_id) AS installs,
       ROUND(SUM(CASE WHEN a.event_date IS NOT NULL THEN 1 ELSE 0 END)/COUNT(DISTINCT t1.player_id), 2)
