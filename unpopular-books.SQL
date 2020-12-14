@@ -9,7 +9,6 @@
 -- Solution 1
 -- Use WHERE to filter qualified books first
 -- Then use NOT IN to exclude the popular books sold last year
-
 SELECT book_id, name FROM books
 WHERE DATEDIFF('2019-06-23', available_from) > 30
 AND book_id NOT IN
