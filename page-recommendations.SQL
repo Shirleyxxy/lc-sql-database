@@ -2,7 +2,7 @@
 -- that your friends liked. It should not recommend pages you already liked.
 -- Return result table in any order without duplicates.
 
-
+-- Solution 1 - UNION
 SELECT DISTINCT page_id AS recommended_page
 FROM Likes
 WHERE user_id IN (
@@ -12,3 +12,16 @@ WHERE user_id IN (
     page_id NOT IN (
       SELECT page_id FROM Likes WHERE user_id = 1
     )
+
+
+-- Solution 2 - CASE WHEN... + JOIN
+SELECT DISTINCT page_id AS recommended_page
+FROM (
+  SELECT CASE WHEN user1_id = 1 THEN user2_id
+              WHEN user2_id = 1 THEN user1_id
+         END AS friend_id
+  FROM Friendship
+) t
+JOIN Likes
+ON t.friend_id = Likes.user_id
+WHERE page_id NOT IN (SELECT page_id FROM Likes WHERE user_id = 1)
