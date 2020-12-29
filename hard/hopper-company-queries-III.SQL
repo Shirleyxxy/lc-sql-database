@@ -19,7 +19,6 @@ WITH RECURSIVE months AS (
   FROM months m LEFT JOIN month_rides_metrics r
   ON m.month = r.month
 )
-
 SELECT r1.month AS month,
        ROUND((r1.ride_distance + r2.ride_distance + r3.ride_distance) / 3, 2) AS average_ride_distance,
        ROUND((r1.ride_duration + r2.ride_duration + r3.ride_duration) / 3, 2) AS average_ride_duration

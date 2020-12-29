@@ -32,11 +32,31 @@ SELECT ROUND(
 AS fraction
 
 
+-- Updates on 2020-12-21:
+-- use DATEDIFF function
+-- No need to use DISTINCT keyword when calculating the fraction
+WITH first_login AS (
+  SELECT player_id, MIN(event_date) AS first_login
+  FROM Activity
+  GROUP BY player_id
+), second_login AS (
+  SELECT a.player_id, a.event_date
+  FROM Activity a
+  JOIN first_login f
+  ON a.player_id = f.player_id AND DATEDIFF(a.event_date, f.first_login) = 1
+)
+
+SELECT ROUND(
+  (SELECT COUNT(player_id) FROM second_login) /
+  (SELECT COUNT(player_id) FROM first_login), 2)
+AS fraction
+
+
 -- Solution 2: Left Join
-SELECT ROUND(COUNT(t2.player_id) / COUNT(t1.player_id), 2) AS fraction
+SELECT ROUND(COUNT(a.player_id) / COUNT(t.player_id), 2) AS fraction
 FROM
 ( SELECT player_id, MIN(event_date) AS first_login
   FROM Activity
-  GROUP BY player_id ) t1
-LEFT JOIN Activity t2
-ON (t1.player_id = t2.player_id AND t1.first_login + 1 = t2.event_date)
+  GROUP BY player_id ) t
+LEFT JOIN Activity a
+ON t.player_id = a.player_id AND t.first_login + 1 = a.event_date
