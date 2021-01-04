@@ -20,14 +20,14 @@ WITH tmp AS (
          DENSE_RANK() OVER (PARTITION BY exam_id ORDER BY score DESC) AS desc_rank
   FROM Exam
 )
-
 SELECT student_id, student_name
 FROM Student
 -- took at least one exam
 WHERE student_id IN (SELECT DISTINCT student_id FROM Exam)
--- didn't score neither the highest nor the lowest.
+-- didn't score neither the highest nor the lowest
 AND student_id NOT IN (SELECT student_id FROM tmp WHERE asc_rank = 1 OR desc_rank = 1)
 ORDER BY student_id
+
 
 
 -- Solution 2
@@ -39,12 +39,11 @@ WITH tmp1 AS (
   SELECT e.student_id, COUNT(e.exam_id) AS total_exams,
          SUM(CASE WHEN e.score > tmp1.min_score AND e.score < tmp1.max_score THEN 1 ELSE 0 END) AS quiet_exams
   FROM Exam e
-  JOIN tmp1 ON (e.exam_id = tmp1.exam_id)
+  JOIN tmp1 ON e.exam_id = tmp1.exam_id
   GROUP BY e.student_id
 )
-
 SELECT s.student_id, s.student_name
 FROM Student s
-JOIN tmp2 ON (s.student_id = tmp2.student_id)
+JOIN tmp2 ON s.student_id = tmp2.student_id
 WHERE tmp2.total_exams = tmp2.quiet_exams
 ORDER BY s.student_id
