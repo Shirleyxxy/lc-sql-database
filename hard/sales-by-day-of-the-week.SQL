@@ -12,7 +12,7 @@ SELECT item_category AS Category,
        SUM(CASE WHEN WEEKDAY(order_date) = 4 THEN quantity ELSE 0 END) AS Friday,
        SUM(CASE WHEN WEEKDAY(order_date) = 5 THEN quantity ELSE 0 END) AS Saturday,
        SUM(CASE WHEN WEEKDAY(order_date) = 6 THEN quantity ELSE 0 END) AS Sunday
-FROM Orders RIGHT JOIN Items
-ON (Orders.item_id = Items.item_id)
+FROM Items i LEFT JOIN Orders o
+ON i.item_id = o.item_id
 GROUP BY item_category
 ORDER BY item_category

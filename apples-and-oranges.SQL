@@ -11,6 +11,7 @@ WHERE a.sale_date = o.sale_date AND a.fruit = 'apples' AND o.fruit = 'oranges'
 GROUP BY a.sale_date
 
 
+
 -- SUM(CASE WHEN...)
 SELECT sale_date, (SUM(CASE WHEN fruit = 'apples' THEN sold_num ELSE 0 END) -
                    SUM(CASE WHEN fruit = 'oranges' THEN sold_num ELSE 0 END)) AS diff

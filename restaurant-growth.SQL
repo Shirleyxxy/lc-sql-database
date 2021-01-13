@@ -6,7 +6,7 @@
 -- average_amount should be rounded to 2 decimal places.
 -- All dates are in the format ('YYYY-MM-DD').
 
--- solution 1
+-- Solution 1
 SELECT a.visited_on AS visited_on,
        SUM(b.day_sum) AS amount,
        ROUND(AVG(b.day_sum), 2) AS average_amount
@@ -22,7 +22,8 @@ ON DATEDIFF(a.visited_on, b.visited_on) BETWEEN 0 AND 6
 GROUP BY a.visited_on
 HAVING COUNT(b.visited_on) = 7
 
--- solution 2
+
+-- Solution 2 (My solution)
 SELECT a.visited_on AS visited_on, SUM(b.day_sum) AS amount,
        ROUND(AVG(b.day_sum), 2) AS average_amount
 FROM

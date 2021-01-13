@@ -13,11 +13,11 @@
 -- Don't return the student who has never taken any exam.
 -- Return the result table ordered by student_id.
 
--- Solution 1
+-- Solution 1 (preferred)
 WITH tmp AS (
   SELECT student_id,
-         DENSE_RANK() OVER (PARTITION BY exam_id ORDER BY score) AS asc_rank,
-         DENSE_RANK() OVER (PARTITION BY exam_id ORDER BY score DESC) AS desc_rank
+         RANK() OVER (PARTITION BY exam_id ORDER BY score) AS asc_rank,
+         RANK() OVER (PARTITION BY exam_id ORDER BY score DESC) AS desc_rank
   FROM Exam
 )
 SELECT student_id, student_name
@@ -29,8 +29,22 @@ AND student_id NOT IN (SELECT student_id FROM tmp WHERE asc_rank = 1 OR desc_ran
 ORDER BY student_id
 
 
-
 -- Solution 2
+WITH tmp AS (
+  SELECT exam_id, e.student_id, score, student_name,
+         RANK() OVER (PARTITION BY exam_id ORDER BY score) AS asc_rank,
+         RANK() OVER (PARTITION BY exam_id ORDER BY score DESC) AS desc_rank
+  FROM Exam e
+  LEFT JOIN Student s
+  ON e.student_id = s.student_id
+)
+SELECT DISTINCT student_id, student_name
+FROM tmp
+WHERE student_id NOT IN (SELECT student_id FROM tmp WHERE asc_rank = 1 OR desc_rank = 1)
+ORDER BY student_id
+
+
+-- Solution 3
 WITH tmp1 AS (
   SELECT exam_id, MAX(score) AS max_score, MIN(score) AS min_score
   FROM Exam

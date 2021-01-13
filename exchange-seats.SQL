@@ -1,3 +1,5 @@
+-- CASE WHEN + mod + subquery for different cases
+
 -- Logic:
 -- odd id (not the last id) --> id + 1
 -- odd id (last id) --> id

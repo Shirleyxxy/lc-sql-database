@@ -17,6 +17,7 @@ JOIN ( SELECT player_id, MIN(event_date) AS first_login
 
 
 -- Solution 3: JOIN + define a temp table (Ref: game play analysis I)
+-- My preferred solution
 WITH first_login AS (
   SELECT player_id, MIN(event_date) AS first_login
   FROM Activity

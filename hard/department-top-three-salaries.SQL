@@ -16,7 +16,6 @@ WHERE ( SELECT COUNT(DISTINCT e2.Salary)
         WHERE e2.Salary > e.Salary AND e2.DepartmentId = e.DepartmentId ) < 3
 
 
-
 -- Solution 2: Window function (I prefer this solution; clear & fast)
 -- Recap: RANK() vs. DENSE_RANK()
 -- DENSE_RANK(): No ranks are skipped if there are ranks with multiple items
