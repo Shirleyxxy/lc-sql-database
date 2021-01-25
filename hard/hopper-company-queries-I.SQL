@@ -1,11 +1,10 @@
--- Recursive CTE
--- Temp tables + JOINs
+-- Recursive CTE + LEFT JOINs
+-- Edge cases: drivers joined in 2019
 
 WITH RECURSIVE months AS (
   SELECT 1 AS month
   UNION ALL
-  SELECT month + 1
-  FROM months
+  SELECT month + 1 FROM months
   WHERE month < 12
 ), drivers_month AS (
   SELECT driver_id,

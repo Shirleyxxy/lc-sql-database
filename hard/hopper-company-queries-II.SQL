@@ -1,8 +1,11 @@
+-- Recursive CTE + LEFT JOINs
+-- Edge cases: drivers joined in 2019
+-- What if the number of available drivers during a month is zero? IFNULL
+
 WITH RECURSIVE months AS (
   SELECT 1 AS month
   UNION ALL
-  SELECT month + 1
-  FROM months
+  SELECT month + 1 FROM months
   WHERE month < 12
 ), drivers_month AS (
   SELECT IF(YEAR(join_date) < 2020, 1, MONTH(join_date)) AS join_month, COUNT(driver_id) AS num_drivers

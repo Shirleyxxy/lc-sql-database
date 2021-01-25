@@ -1,8 +1,11 @@
+-- Recursive CTE
+-- Left Join + IFNULL
+-- Self Join for 3-month window
+
 WITH RECURSIVE months AS (
   SELECT 1 AS month
   UNION ALL
-  SELECT month + 1
-  FROM months
+  SELECT month + 1 FROM months
   WHERE month < 12
 ), month_rides_metrics AS (
   SELECT MONTH(r.requested_at) AS month,
@@ -19,6 +22,7 @@ WITH RECURSIVE months AS (
   FROM months m LEFT JOIN month_rides_metrics r
   ON m.month = r.month
 )
+-- 3-month window
 SELECT r1.month AS month,
        ROUND((r1.ride_distance + r2.ride_distance + r3.ride_distance) / 3, 2) AS average_ride_distance,
        ROUND((r1.ride_duration + r2.ride_duration + r3.ride_duration) / 3, 2) AS average_ride_duration

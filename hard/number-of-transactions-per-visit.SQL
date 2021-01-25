@@ -16,28 +16,23 @@
 -- visits_count is the corresponding number of users who did transactions_count in one visit to the bank
 -- transactions_count should take all values from 0 to max(transactions_count) done by one or more users.
 
--- LEFT JOIN, recursive CTEs
-
-WITH tmp AS (
+WITH t1 AS (
   SELECT v.user_id, v.visit_date,
-         COUNT(v.user_id) AS visits_count,
          SUM(CASE WHEN t.transaction_date IS NOT NULL THEN 1 ELSE 0 END) AS transactions_count
   FROM Visits v
   LEFT JOIN Transactions t
-  ON (v.user_id = t.user_id AND v.visit_date = t.transaction_date)   -- per user per day
+  ON v.user_id = t.user_id AND v.visit_date = t.transaction_date   -- per user per day
   GROUP BY v.user_id, v.visit_date
-),
-
-fill AS (
-    SELECT 0 AS i, (SELECT MAX(transactions_count) FROM tmp) AS e
-    UNION ALL
-    SELECT i + 1, e FROM fill
-    WHERE i < e
+), t AS (
+    SELECT 0 AS rn
+    UNION
+    SELECT ROW_NUMBER() OVER() AS rn FROM Transactions
 )
 
-SELECT f.i AS transactions_count,
-       ISNULL(COUNT(visits_count), 0) AS visits_count
-FROM fill f
-LEFT JOIN tmp ON (f.i = tmp.transactions_count)
-GROUP BY f.i
-ORDER BY transactions_count
+SELECT t.rn AS transactions_count,
+       COUNT(transactions_count) AS visits_count
+FROM t
+LEFT JOIN t1 ON t.rn = t1.transactions_count
+WHERE t.rn <= (SELECT MAX(transactions_count) FROM t1)
+GROUP BY t.rn
+ORDER BY t.rn

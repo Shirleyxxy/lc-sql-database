@@ -1,9 +1,5 @@
 UPDATE salary
-SET sex = IF(sex = 'm', 'f', 'm');
-
+SET sex = IF(sex = 'm', 'f', 'm')
 
 UPDATE salary
-SET
-    sex = (CASE WHEN sex = 'm' THEN 'f'
-                ELSE 'm'
-           END);
+SET sex = (CASE WHEN sex = 'm' THEN 'f' ELSE 'm' END)

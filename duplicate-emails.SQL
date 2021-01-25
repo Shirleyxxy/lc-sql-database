@@ -1,3 +1,11 @@
+-- My first solution: GROUP BY + HAVING 
 SELECT Email FROM Person
 GROUP BY Email
-HAVING COUNT(Email) > 1;
+HAVING COUNT(*) > 1
+
+
+-- Self Join
+SELECT DISTINCT p1.Email
+FROM Person p1 JOIN Person p2
+ON p1.Email = p2.Email
+WHERE p1.Id != p2.Id

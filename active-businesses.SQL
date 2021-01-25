@@ -1,6 +1,7 @@
 -- An active business is a business that has more than one event type with occurences
 -- greater than the average occurences of that event type among all businesses.
 
+
 SELECT business_id
 FROM
   ( SELECT event_type, AVG(occurences) AS avg_occurences

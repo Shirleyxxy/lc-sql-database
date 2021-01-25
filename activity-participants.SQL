@@ -11,7 +11,7 @@
 -- Return the result table in any order. Each activity in table Activities is performed
 -- by any person in the table Friends.
 
--- Solution 1: temp table (MS SQL)
+-- Solution 1: Temp table (preferred solution)
 WITH activities AS (
   SELECT activity, COUNT(id) AS num_participants
   FROM Friends
@@ -22,7 +22,8 @@ WHERE num_participants != (SELECT MAX(num_participants) FROM activities)
       AND num_participants != (SELECT MIN(num_participants) FROM activities)
 
 
--- Solution 2: HAVING and UNION (MySQL)
+
+-- Solution 2: HAVING and UNION
 SELECT activity FROM Friends
 GROUP BY activity
 HAVING COUNT(id) NOT IN
