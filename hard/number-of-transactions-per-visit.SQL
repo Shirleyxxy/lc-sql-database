@@ -16,6 +16,8 @@
 -- visits_count is the corresponding number of users who did transactions_count in one visit to the bank
 -- transactions_count should take all values from 0 to max(transactions_count) done by one or more users.
 
+
+-- Left join 
 WITH t1 AS (
   SELECT v.user_id, v.visit_date,
          SUM(CASE WHEN t.transaction_date IS NOT NULL THEN 1 ELSE 0 END) AS transactions_count

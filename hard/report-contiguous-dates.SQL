@@ -1,7 +1,7 @@
 -- Write an SQL query to generate a report of period_state for each continuous interval of days
 -- in the period from 2019-01-01 to 2019-12-31.
 
--- Tricky part: generate groups for continuous interval of days
+-- Tricky part: generate groups for continuous intervals of days
 -- UNION ALL + window function + GROUP BY + date calculation
 SELECT period_state, MIN(date) AS start_date, MAX(date) AS end_date
 FROM (
@@ -17,7 +17,6 @@ FROM (
  ) tmp
 GROUP BY date - INTERVAL seq DAY, period_state
 ORDER BY start_date
-
 
 
 -- Same idea + clean code

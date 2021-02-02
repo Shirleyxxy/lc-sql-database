@@ -31,9 +31,10 @@ GROUP BY t.Request_at
 ORDER BY t.Request_at
 
 
+-- Preferred solution
 -- Pre-filtering by moving the predicate condition inside JOIN
 -- Same as the temp table solution: we want to reduce the table size before joining
-SELECT t.Request_at AS 'Day',
+SELECT t.Request_at AS Day,
        ROUND(SUM(CASE WHEN t.Status != 'completed' THEN 1 ELSE 0 END) / COUNT(*), 2) AS 'Cancellation Rate'
 From Trips t
 JOIN Users u1

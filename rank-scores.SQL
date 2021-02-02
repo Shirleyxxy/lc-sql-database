@@ -5,6 +5,7 @@ FROM Scores AS S1
 ORDER BY Score DESC
 
 
+
 -- Window function (my preferred solution)
 -- Note 1:
 -- For MySQL solutions, to escape reserved words used as column names

@@ -13,7 +13,7 @@
 -- Don't return the student who has never taken any exam.
 -- Return the result table ordered by student_id.
 
--- Solution 1 (preferred)
+-- Solution 1 - Window function + temp table + IN/NOT IN subquery
 WITH tmp AS (
   SELECT student_id,
          RANK() OVER (PARTITION BY exam_id ORDER BY score) AS asc_rank,

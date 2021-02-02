@@ -10,21 +10,28 @@
 -- Dates of the sales years are between 2018 to 2020.
 -- Return the result table ordered by product_id and report_year.
 
--- Recursive CTE
-WITH dates AS (
-  SELECT MIN(period_start) AS s_date, MAX(period_end) AS e_date FROM Sales
-  UNION ALL
-  SELECT DATEADD(DAY, 1, s_date), e_date FROM dates
-  WHERE s_date <= e_date
-)
+-- MySQL
+WITH t AS (
+  SELECT product_id, '2018' AS report_year,
+         average_daily_sales * (DATEDIFF(LEAST(period_end, '2018-12-31'), GREATEST(period_start, '2018-01-01')) + 1) AS total_amount
+  FROM Sales
+  WHERE YEAR(period_start) = 2018 OR YEAR(period_end) = 2018
 
-SELECT CAST(p.product_id AS VARCHAR(200)) AS PRODUCT_ID,
-       p.product_name AS PRODUCT_NAME,
-       CAST(YEAR(s_date) AS VARCHAR(10)) AS REPORT_YEAR,
-       SUM(average_daily_sales) AS TOTAL_AMOUNT
-FROM Product p
-LEFT JOIN Sales s ON (p.product_id = s.product_id)
-LEFT JOIN dates d ON (d.s_date BETWEEN s.period_start AND s.period_end)
-GROUP BY p.product_id, p.product_name, YEAR(s_date)
-ORDER BY 1, 3
-OPTION(maxrecursion 0)
+  UNION ALL
+
+  SELECT product_id, '2019' AS report_year,
+         average_daily_sales * (DATEDIFF(LEAST(period_end, '2019-12-31'), GREATEST(period_start, '2019-01-01')) + 1) AS total_amount
+  FROM Sales
+  WHERE YEAR(period_start) <= 2019 AND YEAR(period_end) >= 2019
+
+  UNION ALL
+
+  SELECT product_id, '2020' AS report_year,
+         average_daily_sales * (DATEDIFF(LEAST(period_end, '2020-12-31'), GREATEST(period_start, '2020-01-01')) + 1) AS total_amount
+  FROM Sales
+  WHERE YEAR(period_start) = 2020 OR YEAR(period_end) = 2020
+)
+SELECT t.product_id, p.product_name, t.report_year, t.total_amount
+FROM t JOIN Product p
+ON t.product_id = p.product_id
+ORDER BY t.product_id, t.report_year

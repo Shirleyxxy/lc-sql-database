@@ -6,9 +6,17 @@
 -- even id --> id - 1
 
 -- IF
-SELECT IF(id % 2 = 0, id-1, if(id = (SELECT COUNT(*) FROM seat), id, id+1) ) AS id, student
+SELECT IF(id % 2 = 0, id-1, IF(id = (SELECT COUNT(*) FROM seat), id, id+1) ) AS id, student
 FROM seat
 ORDER BY id ASC
+
+
+-- IF (My preferred solution)
+SELECT IF(id % 2 = 1, IF(id = (SELECT MAX(id) FROM seat), id, id+1), id-1) AS id,
+       student
+FROM seat
+ORDER BY id ASC
+
 
 -- CASE WHEN
 SELECT (CASE WHEN id % 2 != 0 AND id != cnt THEN id + 1

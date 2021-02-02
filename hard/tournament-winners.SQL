@@ -4,7 +4,25 @@
 
 -- Write an SQL query to find the winner in each group.
 
--- Solution 1
+-- Solution 1: Window function (Preferred)
+SELECT group_id, player_id
+FROM (
+    SELECT p.player_id, p.group_id,
+           RANK() OVER(PARTITION BY p.group_id ORDER BY ps.scores DESC, p.player_id ASC) AS rk
+    FROM Players p JOIN (
+      SELECT player, SUM(score) AS scores
+      FROM
+          ( SELECT first_player AS player, first_score AS score FROM Matches
+            UNION ALL
+            SELECT second_player AS player, second_score AS score FROM Matches ) s
+      GROUP BY player ) ps
+    ON p.player_id = ps.player
+) t
+WHERE t.rk = 1
+
+
+
+-- Solution 2
 SELECT group_id AS GROUP_ID, min(player_id) AS PLAYER_ID
 FROM Players JOIN
    (SELECT player, SUM(score) AS total_score
@@ -27,20 +45,3 @@ WHERE (group_id, total_score) IN (
         GROUP BY group_id
       )
 GROUP BY group_id
-
-
--- Solution 2: Window function
-SELECT group_id AS GROUP_ID, player_id AS PLAYER_ID
-FROM (
-    SELECT p.player_id, p.group_id,
-           RANK() OVER(PARTITION BY p.group_id ORDER BY ps.total_score DESC, p.player_id ASC) AS rk
-    FROM Players p JOIN (
-      SELECT player, SUM(score) AS total_score
-      FROM
-          ( SELECT first_player AS player, first_score AS score FROM Matches
-            UNION ALL
-            SELECT second_player AS player, second_score AS score FROM Matches ) s
-      GROUP BY player ) ps
-    ON (p.player_id = ps.player)
-) t
-WHERE t.rk = 1

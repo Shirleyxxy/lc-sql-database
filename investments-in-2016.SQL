@@ -6,7 +6,7 @@
 -- 2. Are not located in the same city as any other policyholder
 -- (i.e.: the (latitude, longitude) attribute pairs must be unique).
 
-
+-- Solution 1 - IN subquery
 SELECT SUM(TIV_2016) AS TIV_2016
 FROM insurance
 WHERE TIV_2015 IN (
@@ -14,8 +14,15 @@ WHERE TIV_2015 IN (
     GROUP BY TIV_2015
     HAVING COUNT(*) > 1
   )
-AND CONCAT(LAT, LON) IN (
-    SELECT CONCAT(LAT, LON) FROM insurance -- trick to take LAT and LON as a pair
+AND (LAT, LON) IN (
+    SELECT LAT, LON FROM insurance
     GROUP BY LAT, LON
     HAVING COUNT(*) = 1
   )
+
+
+-- Solution 2
+SELECT SUM(TIV_2016) AS TIV_2016
+FROM insurance a
+WHERE 1 = (SELECT COUNT(*) FROM insurance b WHERE a.LAT = b.LAT AND a.LON = b.LON)
+AND 1 < (SELECT COUNT(*) FROM insurance c WHERE a.TIV_2015 = c.TIV_2015)

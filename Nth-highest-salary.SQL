@@ -15,6 +15,17 @@ END
 -- Solution 2
 CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
 BEGIN
+  SET N = N - 1;
+  RETURN (
+      SELECT DISTINCT Salary FROM Employee
+      ORDER BY Salary DESC LIMIT N, 1
+  );
+END
+
+
+-- Solution 3
+CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
+BEGIN
   RETURN (
       SELECT Salary FROM (
       SELECT DISTINCT Salary, DENSE_RANK() OVER(ORDER BY Salary DESC) AS rk

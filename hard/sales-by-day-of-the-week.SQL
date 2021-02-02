@@ -4,6 +4,10 @@
 -- Items:
 -- item_id | item_name | item_category
 
+
+-- Left Join
+-- SUM(CASE WHEN...)
+-- WEEKDAY function
 SELECT item_category AS Category,
        SUM(CASE WHEN WEEKDAY(order_date) = 0 THEN quantity ELSE 0 END) AS Monday,
        SUM(CASE WHEN WEEKDAY(order_date) = 1 THEN quantity ELSE 0 END) AS Tuesday,
